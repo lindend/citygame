@@ -1,23 +1,59 @@
-type Road = {
+export type Road = {
   type: "road";
   level: number;
+  id: number;
 };
-type House = {
-  type: "house";
+export type Suburban = {
+  type: "suburban";
   level: number;
 };
-type Empty = {
+export type Commercial = {
+  type: "commercial";
+  level: number;
+};
+export type Empty = {
   type: "empty";
 };
-type TileSide = Road | House | Empty;
+export type TileSideType = Road | Suburban | Commercial | Empty;
+
+export function RoadSide(id: number, level: number): Road {
+  return {
+    type: "road",
+    id,
+    level,
+  };
+}
+
+export function EmptySide(): Empty {
+  return {
+    type: "empty",
+  };
+}
+
+export function CommercialSide(level: number): Commercial {
+  return {
+    type: "commercial",
+    level,
+  };
+}
+
+export function SuburbanSide(level: number): Suburban {
+  return {
+    type: "suburban",
+    level,
+  };
+}
 
 let tileIndex = 0;
 
+export type TileSide = 0 | 1 | 2 | 3;
+
 export class Tile {
-  sides: TileSide[];
   id: string;
-  constructor() {
+  sides: TileSideType[];
+
+  constructor(sides: TileSideType[]) {
     this.id = "tile" + tileIndex++;
-    this.sides = [];
+    this.sides = sides;
   }
 }
