@@ -1,9 +1,9 @@
 import { Scene } from "@babylonjs/core/scene";
-import { loadAssets } from "./loadAssets";
+import { asset, loadAssets } from "./loadAssets";
 
 const assetRoot = "./assets/city/commercial/";
 const assets = {
-  small_buildingC: "small_buildingC.glb",
+  small_buildingC: asset("small_buildingC.glb"),
 };
 
 export function loadCommercialAssets(scene: Scene, root: string = assetRoot) {

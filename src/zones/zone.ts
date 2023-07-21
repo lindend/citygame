@@ -1,10 +1,10 @@
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { AssetContainer } from "@babylonjs/core/assetContainer";
+import { LoadedAsset } from "../assets/loadAssets";
 
 export type ZoneMeshItem = {
   type: "mesh";
   name: string;
-  mesh: AssetContainer;
+  mesh: LoadedAsset;
   position: Vector3;
   rotation?: Vector3;
   scale?: Vector3;
@@ -13,7 +13,7 @@ export type ZoneMeshItem = {
 
 export function meshItem(
   name: string,
-  mesh: AssetContainer,
+  mesh: LoadedAsset,
   position: Vector3,
   optional?: { rotation?: Vector3; scale?: Vector3; castsShadows?: boolean }
 ): ZoneMeshItem {

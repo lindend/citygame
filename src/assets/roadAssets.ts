@@ -1,13 +1,13 @@
 import { Scene } from "@babylonjs/core/scene";
-import { loadAssets } from "./loadAssets";
+import { asset, loadAssets } from "./loadAssets";
 
 const assetRoot = "./assets/city/roads/";
 const assets = {
-  straight: "road_straight.glb",
-  bend: "road_bend.glb",
-  bendSidewalk: "road_bendSidewalk.glb",
-  intersection3: "road_intersection.glb",
-  intersection4: "road_crossroad.glb",
+  straight: asset("road_straight.glb"),
+  bend: asset("road_bend.glb"),
+  bendSidewalk: asset("road_bendSidewalk.glb"),
+  intersection3: asset("road_intersection.glb"),
+  intersection4: asset("road_crossroad.glb"),
 };
 
 export function loadRoadAssets(scene: Scene, root: string = assetRoot) {

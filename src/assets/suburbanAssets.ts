@@ -1,15 +1,15 @@
 import { Scene } from "@babylonjs/core/scene";
-import { loadAssets } from "./loadAssets";
+import { asset, loadAssets } from "./loadAssets";
 
 const assetRoot = "./assets/city/suburban/";
 const assets = {
-  house01: "house_type01.glb",
-  house02: "house_type02.glb",
-  house05: "house_type05.glb",
-  tree_large: "tree_large.glb",
-  tree_small: "tree_small.glb",
-  driveway: "driveway_short.glb",
-  path: "path_short.glb",
+  house01: asset("house_type01.glb"),
+  house02: asset("house_type02.glb"),
+  house05: asset("house_type05.glb"),
+  tree_large: asset("tree_large.glb"),
+  tree_small: asset("tree_small.glb"),
+  driveway: asset("driveway_short.glb"),
+  path: asset("path_short.glb"),
 };
 
 export function loadSuburbanAssets(scene: Scene, root: string = assetRoot) {
