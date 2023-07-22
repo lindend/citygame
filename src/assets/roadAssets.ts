@@ -1,6 +1,6 @@
 import { Scene } from "@babylonjs/core/scene";
 import { asset, loadAssets } from "./loadAssets";
-import { Vector3 } from "@babylonjs/core";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 
 const roadCenter = new Vector3(0, 0, -0.75);
 const ra = (file: string) => asset(file, roadCenter);
