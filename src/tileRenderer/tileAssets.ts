@@ -1,58 +1,14 @@
 import "@babylonjs/loaders/glTF/2.0";
-import earcut from "earcut";
-import { Game } from "./game";
-import { Scene } from "@babylonjs/core/scene";
+import { Game } from "../game";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { Material } from "@babylonjs/core/Materials/material";
-import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { AssetContainer } from "@babylonjs/core/assetContainer";
-import { Node } from "@babylonjs/core/node";
-import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { LoadedAsset } from "../assets/loadAssets";
 import { zoneFactory } from "../zones/zoneFactory";
 import { ZoneSize } from "../zones/zone";
 import { Tile, TileSideType } from "../world/tile";
 
-const baseTilePoints = [
-  new Vector3(-1, 0, 1),
-  new Vector3(-1, 0, -1),
-  new Vector3(1, 0, -1),
-  new Vector3(1, 0, 1),
-];
-
-const tileZonePoints: { [key in ZoneSize]: Vector3[] } = {
-  large: [
-    new Vector3(-1, 0, 1),
-    new Vector3(1, 0, 1),
-    new Vector3(1, 0, 0.25),
-    new Vector3(-1, 0, 0.25),
-  ],
-  medium: [
-    new Vector3(-1, 0, 1),
-    new Vector3(1, 0, 1),
-    new Vector3(0.25, 0, 0.25),
-    new Vector3(-1, 0, 0.25),
-  ],
-  small: [
-    new Vector3(-1, 0, 1),
-    new Vector3(1, 0, 1),
-    new Vector3(0.25, 0, 0.25),
-    new Vector3(-0.25, 0, 0.25),
-  ],
-};
-function createBaseTile(name: string, scene: Scene) {
-  return MeshBuilder.ExtrudePolygon(
-    name,
-    { shape: baseTilePoints, depth: 0.1 },
-    scene,
-    earcut
-  );
-}
-
 export type TileAsset = {
   asset: LoadedAsset;
+  inverted: boolean;
   transform: Matrix;
 };
 
@@ -60,34 +16,44 @@ const straightRoadScale = new Vector3(0.75, 0.5, 0.5);
 const straightRoadRotation = Quaternion.FromEulerVector(
   Vector3.UpReadOnly.scale(Math.PI / 2)
 );
-const straightRoadPosition = new Vector3(-0.75 * 0.5, 0, 0.625);
+const straightRoadPosition = new Vector3(0, 0, 0.625);
+
+function tileAsset(
+  asset: LoadedAsset,
+  transform: Matrix,
+  inverted: boolean
+): TileAsset {
+  return {
+    asset,
+    transform,
+    inverted,
+  };
+}
+
 function getStraightRoad(game: Game): TileAsset[] {
   const roadModel = game.assets.roads.straight;
   return [
-    {
-      asset: roadModel,
-      transform: Matrix.Compose(
+    tileAsset(
+      roadModel,
+      Matrix.Compose(
         straightRoadScale,
         straightRoadRotation,
         straightRoadPosition
       ),
-    },
+      false
+    ),
   ];
 }
 
 const centerRoadScale = new Vector3(0.5, 0.5, 0.5);
-const centerRoadPosition = new Vector3(0, 0, -0.75 * 0.5);
 
-function getCenterRoad(asset: LoadedAsset): TileAsset[] {
+function getCenterRoad(asset: LoadedAsset, rotation: Quaternion): TileAsset[] {
   return [
-    {
+    tileAsset(
       asset,
-      transform: Matrix.Compose(
-        centerRoadScale,
-        Quaternion.Identity(),
-        centerRoadPosition
-      ),
-    },
+      Matrix.Compose(centerRoadScale, rotation, Vector3.ZeroReadOnly),
+      false
+    ),
   ];
 }
 
@@ -113,6 +79,8 @@ function getTileSideSize(tile: Tile, sideIndex: number): TileSideSize {
   return { size: "small" };
 }
 
+const defaultScale = new Vector3(0.5, 0.5, 0.5);
+
 function createTileSide(
   tile: Tile,
   side: TileSideType,
@@ -127,23 +95,26 @@ function createTileSide(
     const size = getTileSideSize(tile, sideIndex);
 
     let scaling = Vector3.OneReadOnly;
+    let inverted = false;
     // Mirror right-sided tiles
     if (size.orientation == "left") {
       scaling = new Vector3(-1, 1, 1);
+      inverted = true;
     }
 
     const sideFactory = zoneFactory[side.type][size.size];
     const rng = Math.floor(Math.random() * sideFactory.length);
     const sideItems = sideFactory[rng](game);
     return sideItems.items.map((item) => {
-      return {
-        asset: item.mesh,
-        transform: Matrix.Compose(
-          item.scale || Vector3.OneReadOnly,
-          Quaternion.FromEulerVector(item.rotation || Vector3.UpReadOnly),
+      return tileAsset(
+        item.mesh,
+        Matrix.Compose(
+          (item.scale || defaultScale).multiply(scaling),
+          Quaternion.FromEulerVector(item.rotation || Vector3.ZeroReadOnly),
           item.position
         ),
-      };
+        inverted
+      );
     });
   }
 }
@@ -182,59 +153,54 @@ function isStraightRoad(tile: Tile): boolean {
 }
 
 export function getTileAssets(tile: Tile, game: Game): TileAsset[] {
-  const root = new TransformNode(tile.id, game.scene);
+  let assets: TileAsset[] = [];
   for (let i = 0; i < tile.sides.length; ++i) {
     const side = tile.sides[i];
     const tileSideAssets = createTileSide(tile, side, i, game);
-    tileSideAssets.forEach((a) => Matrix.RotationY(Math.PI * 0.5 * i));
+    const transformed = tileSideAssets.map(({ asset, transform, inverted }) => {
+      return {
+        asset,
+        transform: transform.multiply(Matrix.RotationY(Math.PI * 0.5 * i)),
+        inverted,
+      };
+    });
+    assets.push(...transformed);
   }
 
-  const tileCenterId = `${tile.id}_center`;
   let num = numRoads(tile);
   if (num == 2) {
-    const model = isStraightRoad(tile)
+    const isStraight = isStraightRoad(tile);
+    const model = isStraight
       ? game.assets.roads.straight
       : game.assets.roads.bendSidewalk;
-    const center = addCenterRoad(tileCenterId, game, model);
-    center.rotation = Vector3.UpReadOnly.scale(
-      (Math.PI / 2) * (lastRoad(tile) + 1)
+    const rotation = isStraight ? 1 : 2;
+    const center = getCenterRoad(
+      model,
+      Quaternion.FromEulerAngles(
+        0,
+        (Math.PI / 2) * (lastRoad(tile) + rotation),
+        0
+      )
     );
-    center.parent = root;
+    assets.push(...center);
   } else if (num == 3) {
-    const center = addCenterRoad(
-      tileCenterId,
-      game,
-      game.assets.roads.intersection3
+    const center = getCenterRoad(
+      game.assets.roads.intersection3,
+      Quaternion.FromEulerAngles(0, (Math.PI / 2) * (lastRoad(tile) + 1), 0)
     );
-    center.rotation = Vector3.UpReadOnly.scale(
-      (Math.PI / 2) * (lastRoad(tile) + 1)
-    );
-    center.parent = root;
+    assets.push(...center);
   } else if (num == 4) {
-    const center = addCenterRoad(
-      tileCenterId,
-      game,
-      game.assets.roads.intersection4
+    const center = getCenterRoad(
+      game.assets.roads.intersection4,
+      Quaternion.Identity()
     );
-    center.parent = root;
+    assets.push(...center);
   }
-
-  let meshes = root.getChildren<Mesh>(
-    (n: Node): n is Mesh => (<Mesh>n).subMeshes !== undefined,
-    false
-  );
-  let merged = Mesh.MergeMeshes(meshes, true, true, undefined, false, true)!;
-  merged.isPickable = false;
-
-  root.getChildren().forEach((c) => c.dispose());
-
-  merged.parent = root;
-
-  const base = createBaseTile(tile.id + "_base", game.scene);
-  base.isPickable = false;
-  base.parent = root;
-
-  return root;
-
-  // return base;
+  assets.forEach((asset) => {
+    const center = asset.asset.spec.center;
+    asset.transform = asset.transform.multiply(
+      Matrix.Translation(center.x, center.y, center.z)
+    );
+  });
+  return assets;
 }

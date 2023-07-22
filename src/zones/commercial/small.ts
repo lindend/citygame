@@ -12,7 +12,7 @@ export function smallCommercialTile1(game: Game): Zone {
         "building1",
         game.assets.commercial.small_buildingC,
         new Vector3(-0.442, 0, 0.547),
-        { rotation: Vector3.UpReadOnly.scale(Math.PI) }
+        { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],
   };

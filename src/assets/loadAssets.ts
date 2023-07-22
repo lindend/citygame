@@ -1,5 +1,6 @@
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
 import { Scene } from "@babylonjs/core/scene";
 
@@ -8,14 +9,18 @@ export type AssetPalette = {
 };
 
 export type AssetSpec = {
+  id: string;
   file: string;
+  center: Vector3;
   palettes: AssetPalette[];
 };
 
-export function asset(file: string): AssetSpec {
+export function asset(file: string, center?: Vector3): AssetSpec {
   return {
+    id: file,
     file,
     palettes: [],
+    center: center || Vector3.ZeroReadOnly,
   };
 }
 

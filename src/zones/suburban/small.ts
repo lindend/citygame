@@ -12,7 +12,7 @@ export function smallSuburbanTile1(game: Game): Zone {
         "house1",
         game.assets.suburban.house01,
         new Vector3(-0.5, 0, 0.4),
-        { rotation: Vector3.UpReadOnly.scale(Math.PI) }
+        { rotation: new Vector3(0, Math.PI, 0) }
       ),
       meshItem(
         "driveway",

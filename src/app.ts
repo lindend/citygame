@@ -1,8 +1,6 @@
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF/2.0";
-import { createTileMesh } from "./tileMesh";
-import { CommercialSide, RoadSide, SuburbanSide, Tile } from "./world/tile";
 import { loadRoadAssets } from "./assets/roadAssets";
 import { Game } from "./game";
 import { loadSuburbanAssets } from "./assets/suburbanAssets";
@@ -19,6 +17,9 @@ import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
 import { materials } from "./materials";
 import { randomTile } from "./randomTile";
+import { Chunk } from "./tileRenderer/chunk";
+import { CommercialSide, RoadSide, SuburbanSide, Tile } from "./world/tile";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 
 class App {
   engine: Engine;
@@ -40,8 +41,8 @@ class App {
     this.camera = new ArcRotateCamera(
       "Camera",
       Math.PI / 2,
-      Math.PI / 2,
-      2,
+      Math.PI / 2 - 1.0,
+      3,
       Vector3.Zero(),
       scene
     );
@@ -117,13 +118,35 @@ class App {
       },
     };
 
-    for (let x = 0; x < 10; x += 2) {
-      for (let y = 0; y < 10; y += 2) {
-        let t = createTileMesh(randomTile(), game);
-        t.position = new Vector3(x, 0, y);
-        t.freezeWorldMatrix();
+    const chunk = new Chunk("testchunk", game);
+
+    for (let x = 0; x < 1; ++x) {
+      for (let y = 0; y < 1; ++y) {
+        const tile = new Tile([
+          RoadSide(0, 0),
+          SuburbanSide(0),
+          CommercialSide(0),
+          // RoadSide(0, 0),
+          // RoadSide(0, 0),
+          RoadSide(0, 0),
+        ]);
+        // const tile = randomTile();
+        const position = new Vector3(x * 2, 0, y * 2);
+        chunk.addTile(tile, position);
       }
     }
+
+    chunk.build();
+
+    // const inst = game.assets.roads.straight.asset.instantiateModelsToScene();
+    // inst.rootNodes.forEach((r) =>
+    //   r
+    //     .getChildMeshes<Mesh>()
+    //     .forEach((g) => g.rotate(Vector3.UpReadOnly, Math.PI / 2))
+    // );
+    // const { min, max } = inst.rootNodes[0].getHierarchyBoundingVectors(true);
+    // console.log(min);
+    // console.log(max);
   }
 }
 const app = new App();
