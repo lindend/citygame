@@ -19,7 +19,6 @@ import { materials } from "./materials";
 import { randomTile } from "./randomTile";
 import { Chunk } from "./tileRenderer/chunk";
 import { CommercialSide, RoadSide, SuburbanSide, Tile } from "./world/tile";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
 
 class App {
   engine: Engine;
@@ -43,7 +42,7 @@ class App {
       "Camera",
       Math.PI / 2,
       Math.PI / 2 - 1.0,
-      3,
+      30,
       Vector3.Zero(),
       scene
     );
@@ -121,17 +120,17 @@ class App {
 
     const chunk = new Chunk("testchunk", game);
 
-    for (let x = 0; x < 1; ++x) {
-      for (let y = 0; y < 1; ++y) {
-        const tile = new Tile([
-          RoadSide(0, 0),
-          SuburbanSide(0),
-          CommercialSide(0),
-          // RoadSide(0, 0),
-          // RoadSide(0, 0),
-          RoadSide(0, 0),
-        ]);
-        // const tile = randomTile();
+    for (let x = 0; x < 5; ++x) {
+      for (let y = 0; y < 5; ++y) {
+        // const tile = new Tile([
+        //   RoadSide(0, 0),
+        //   SuburbanSide(0),
+        //   CommercialSide(0),
+        //   // RoadSide(0, 0),
+        //   // RoadSide(0, 0),
+        //   RoadSide(0, 0),
+        // ]);
+        const tile = randomTile();
         const position = new Vector3(x * 2, 0, y * 2);
         chunk.addTile(tile, position);
       }
