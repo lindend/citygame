@@ -60,8 +60,8 @@ export function materials(scene: Scene): Materials {
 
   materials.default.specularColor = Color3.BlackReadOnly;
   materials.default_inverted.specularColor = Color3.BlackReadOnly;
-  materials.default.diffuseColor = Color3.Blue();
-  materials.default_inverted.diffuseColor = Color3.Blue();
+  // materials.default.diffuseColor = Color3.Blue();
+  // materials.default_inverted.diffuseColor = Color3.Blue();
 
   materials.default.sideOrientation = Material.ClockWiseSideOrientation;
   materials.default_inverted.sideOrientation =

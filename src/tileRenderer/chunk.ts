@@ -12,9 +12,14 @@ import { Nullable } from "@babylonjs/core/types";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 
+type ChunkAssetMesh = {
+  mesh: Mesh;
+  defaultColor: Color3;
+};
+
 type ChunkAssetInstance = {
   asset: LoadedAsset;
-  meshes: Mesh[];
+  meshes: ChunkAssetMesh[];
 };
 type ChunkAsset = { [key: string]: ChunkAssetInstance };
 function getDiffuseColor(material: Nullable<Material>): Color3 {
@@ -65,9 +70,16 @@ export class Chunk {
       }
 
       const meshes = this.meshes[assetId];
-      for (let j = 0; j < meshes.meshes.length; ++j) {
+      for (let mesh of meshes.meshes) {
         const meshTransform = ta.transform.multiply(transform);
-        meshes.meshes[j].thinInstanceAdd(meshTransform, false);
+        const idx = mesh.mesh.thinInstanceAdd(meshTransform, false);
+        const color = mesh.defaultColor;
+        mesh.mesh.thinInstanceSetAttributeAt("color", idx, [
+          color.r,
+          color.g,
+          color.b,
+          1,
+        ]);
       }
     }
   }
@@ -75,8 +87,9 @@ export class Chunk {
   build() {
     for (let mesh of Object.values(this.meshes)) {
       mesh.meshes.forEach((m) => {
-        m.thinInstanceBufferUpdated("matrix");
-        m.thinInstanceRefreshBoundingInfo(false);
+        m.mesh.thinInstanceBufferUpdated("matrix");
+        m.mesh.thinInstanceBufferUpdated("color");
+        m.mesh.thinInstanceRefreshBoundingInfo(false);
       });
     }
     this.tileMesh?.thinInstanceBufferUpdated("matrix");
@@ -93,8 +106,8 @@ export class Chunk {
       true
     );
     added.rootNodes.forEach((n) => (n.parent = this.chunkNode));
-    const meshes = added.rootNodes.flatMap((r) => r.getChildMeshes<Mesh>());
-    meshes.forEach((m) => {
+    const meshNodes = added.rootNodes.flatMap((r) => r.getChildMeshes<Mesh>());
+    const meshes = meshNodes.map((m) => {
       m.makeGeometryUnique();
       // Work-around for a bug(?) in babylonjs that prevents inverted meshes
       // from listening to side orientation from materials.
@@ -104,6 +117,12 @@ export class Chunk {
       m.material = !inverted
         ? this.game.materials.default
         : this.game.materials.default_inverted;
+
+      m.thinInstanceRegisterAttribute("color", 4);
+      return {
+        mesh: m,
+        defaultColor,
+      };
     });
     return {
       asset,
