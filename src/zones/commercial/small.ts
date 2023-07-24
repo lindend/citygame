@@ -11,7 +11,7 @@ export function smallCommercialTile1(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.small_buildingC,
-        new Vector3(-0.442, 0, 0.547),
+        new Vector3(0.1, 0, 0.5),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],

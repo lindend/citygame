@@ -6,7 +6,7 @@ import { Game } from "./game";
 import { loadSuburbanAssets } from "./assets/suburbanAssets";
 import { loadCommercialAssets } from "./assets/commercialAssets";
 import { Engine } from "@babylonjs/core/Engines/engine";
-import { Scene } from "@babylonjs/core/scene";
+import { Scene, ScenePerformancePriority } from "@babylonjs/core/scene";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -35,8 +35,9 @@ class App {
     document.body.appendChild(canvas);
 
     // initialize babylon scene and engine
-    this.engine = new Engine(canvas, true);
+    this.engine = new Engine(canvas, true, {});
     const scene = new Scene(this.engine);
+    scene.performancePriority = ScenePerformancePriority.Aggressive;
 
     this.camera = new ArcRotateCamera(
       "Camera",

@@ -7,12 +7,32 @@ import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { createBaseTile } from "./tileGeometry";
 import { Material } from "@babylonjs/core/Materials/material";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { Nullable } from "@babylonjs/core/types";
+import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 
 type ChunkAssetInstance = {
   asset: LoadedAsset;
   meshes: Mesh[];
 };
 type ChunkAsset = { [key: string]: ChunkAssetInstance };
+function getDiffuseColor(material: Nullable<Material>): Color3 {
+  if (material == null) {
+    return Color3.Purple();
+  }
+
+  switch (material.getClassName()) {
+    case "PBRMaterial":
+      const pbr = material as PBRMaterial;
+      return pbr.albedoColor;
+    case "StandardMaterial":
+      const mat = material as StandardMaterial;
+      return mat.diffuseColor;
+    default:
+      return Color3.Purple();
+  }
+}
 
 export class Chunk {
   private name: string;
@@ -46,7 +66,7 @@ export class Chunk {
 
       const meshes = this.meshes[assetId];
       for (let j = 0; j < meshes.meshes.length; ++j) {
-        const meshTransform = ta.transform; //transform.multiply(tileAssets[i].transform);
+        const meshTransform = ta.transform.multiply(transform);
         meshes.meshes[j].thinInstanceAdd(meshTransform, false);
       }
     }
@@ -75,15 +95,15 @@ export class Chunk {
     added.rootNodes.forEach((n) => (n.parent = this.chunkNode));
     const meshes = added.rootNodes.flatMap((r) => r.getChildMeshes<Mesh>());
     meshes.forEach((m) => {
-      if (m.material) {
-        m.material.sideOrientation = !inverted
-          ? Material.ClockWiseSideOrientation
-          : Material.CounterClockWiseSideOrientation;
-        if (inverted) {
-          m.material.backFaceCulling = false;
-        }
-      }
       m.makeGeometryUnique();
+      // Work-around for a bug(?) in babylonjs that prevents inverted meshes
+      // from listening to side orientation from materials.
+      m.overrideMaterialSideOrientation = null;
+      const oldMaterial = m.material;
+      const defaultColor = getDiffuseColor(oldMaterial);
+      m.material = !inverted
+        ? this.game.materials.default
+        : this.game.materials.default_inverted;
     });
     return {
       asset,
