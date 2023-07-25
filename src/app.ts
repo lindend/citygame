@@ -12,13 +12,18 @@ import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { SSAORenderingPipeline } from "@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssaoRenderingPipeline";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
 import { materials } from "./materials";
 import { randomTile } from "./randomTile";
 import { Chunk } from "./tileRenderer/chunk";
 import { CommercialSide, RoadSide, SuburbanSide, Tile } from "./world/tile";
+import {
+  TonemapPostProcess,
+  TonemappingOperator,
+} from "@babylonjs/core/PostProcesses/tonemapPostProcess";
+import { CascadedShadowGenerator } from "@babylonjs/core/Lights/Shadows/cascadedShadowGenerator";
 
 class App {
   engine: Engine;
@@ -38,11 +43,21 @@ class App {
     const scene = new Scene(this.engine);
     scene.performancePriority = ScenePerformancePriority.Aggressive;
 
+    scene.autoClear = true;
+    scene.autoClearDepthAndStencil = true;
+    scene.clearColor = new Color4(0.53, 0.81, 0.98, 1.0);
+    scene.fogEnabled = true;
+    scene.fogStart = 100;
+    // scene.fogEnd = 100;
+    scene.fogMode = Scene.FOGMODE_EXP2;
+    scene.fogDensity = 0.01;
+    scene.fogColor = new Color3(0.53, 0.81, 0.98);
+
     this.camera = new ArcRotateCamera(
       "Camera",
       Math.PI / 2,
       Math.PI / 2 - 1.0,
-      30,
+      3,
       Vector3.Zero(),
       scene
     );
@@ -100,16 +115,28 @@ class App {
       new Vector3(1, -1, 1),
       this.scene
     );
-    ambientLight.diffuse = new Color3(0.2, 0.2, 0.2);
+    ambientLight.diffuse = new Color3(0.3, 0.3, 0.5);
     const sunLight = new DirectionalLight(
       "sun",
       new Vector3(1, -1, 1),
       this.scene
     );
-    sunLight.diffuse = new Color3(1.5, 1.5, 1.5);
+    sunLight.diffuse = new Color3(1.2, 1.2, 1.2);
+
+    // const shadows = new ShadowGenerator(2048, sunLight, undefined, this.camera);
+    // shadows.bias = 0.0000015;
+    // shadows.normalBias = 0.0006;
+    // shadows.useContactHardeningShadow = true;
+    // shadows.contactHardeningLightSizeUVRatio = 0.05;
+    const shadows = new CascadedShadowGenerator(2048, sunLight);
+    shadows.autoCalcDepthBounds = true;
+    shadows.bias = 0.0027;
+    shadows.normalBias = 0;
+    shadows.stabilizeCascades = true;
+
     const game: Game = {
       scene: this.scene,
-      shadows: new ShadowGenerator(1024, sunLight, undefined, this.camera),
+      shadows: shadows,
       materials: materials(this.scene),
       assets: {
         roads: roadAssets,
@@ -120,8 +147,8 @@ class App {
 
     const chunk = new Chunk("testchunk", game);
 
-    for (let x = 0; x < 5; ++x) {
-      for (let y = 0; y < 5; ++y) {
+    for (let x = 0; x < 10; ++x) {
+      for (let y = 0; y < 10; ++y) {
         // const tile = new Tile([
         //   RoadSide(0, 0),
         //   SuburbanSide(0),

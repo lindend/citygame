@@ -23,9 +23,11 @@ function tileAsset(
   transform: Matrix,
   inverted: boolean
 ): TileAsset {
+  const c = asset.center;
+  const center = Matrix.Translation(c.x, c.y, c.z);
   return {
     asset,
-    transform,
+    transform: center.multiply(transform),
     inverted,
   };
 }
@@ -173,7 +175,7 @@ export function getTileAssets(tile: Tile, game: Game): TileAsset[] {
     const model = isStraight
       ? game.assets.roads.straight
       : game.assets.roads.bendSidewalk;
-    const rotation = isStraight ? 1 : 2;
+    const rotation = isStraight ? 1 : 1;
     const center = getCenterRoad(
       model,
       Quaternion.FromEulerAngles(
@@ -196,11 +198,5 @@ export function getTileAssets(tile: Tile, game: Game): TileAsset[] {
     );
     assets.push(...center);
   }
-  assets.forEach((asset) => {
-    const center = asset.asset.spec.center;
-    asset.transform = asset.transform.multiply(
-      Matrix.Translation(center.x, center.y, center.z)
-    );
-  });
   return assets;
 }

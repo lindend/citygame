@@ -1,6 +1,6 @@
 import { Tile } from "../world/tile";
 import { Game } from "../game";
-import { LoadedAsset } from "../assets/loadAssets";
+import { AssetPalette, LoadedAsset } from "../assets/loadAssets";
 import { getTileAssets } from "./tileAssets";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -14,6 +14,7 @@ import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 
 type ChunkAssetMesh = {
   mesh: Mesh;
+  materialName: string;
   defaultColor: Color3;
 };
 
@@ -59,6 +60,7 @@ export class Chunk {
     if (!this.tileMesh) {
       this.tileMesh = createBaseTile("tile_base", this.game.scene);
       this.tileMesh.parent = this.chunkNode;
+      this.tileMesh.receiveShadows = true;
     }
     this.tileMesh.thinInstanceAdd(transform, false);
 
@@ -70,10 +72,20 @@ export class Chunk {
       }
 
       const meshes = this.meshes[assetId];
+      const palette = getRandomPalette(ta.asset.spec.palettes);
       for (let mesh of meshes.meshes) {
         const meshTransform = ta.transform.multiply(transform);
-        const idx = mesh.mesh.thinInstanceAdd(meshTransform, false);
-        const color = mesh.defaultColor;
+        // Workaround for a bug where the built-in mesh is pre-multiplied with
+        // the thin instance transform
+        const builtInMeshTransform = mesh.mesh.getWorldMatrix();
+        let inverted = Matrix.Invert(builtInMeshTransform);
+        // meshTrans.mult(inverted) -> Inv * MeshTrans
+        // BuiltIn.mult(Inv*MeshTrans) -> Inv*MeshTrans*BuiltIn
+        const workaroundTransform = builtInMeshTransform.multiply(
+          meshTransform.multiply(inverted)
+        );
+        const idx = mesh.mesh.thinInstanceAdd(workaroundTransform, false);
+        const color = palette[mesh.materialName] || mesh.defaultColor;
         mesh.mesh.thinInstanceSetAttributeAt("color", idx, [
           color.r,
           color.g,
@@ -109,6 +121,10 @@ export class Chunk {
     const meshNodes = added.rootNodes.flatMap((r) => r.getChildMeshes<Mesh>());
     const meshes = meshNodes.map((m) => {
       m.makeGeometryUnique();
+
+      this.game.shadows.addShadowCaster(m);
+      m.receiveShadows = true;
+
       // Work-around for a bug(?) in babylonjs that prevents inverted meshes
       // from listening to side orientation from materials.
       m.overrideMaterialSideOrientation = null;
@@ -121,6 +137,7 @@ export class Chunk {
       m.thinInstanceRegisterAttribute("color", 4);
       return {
         mesh: m,
+        materialName: oldMaterial?.name || "",
         defaultColor,
       };
     });
@@ -129,4 +146,12 @@ export class Chunk {
       meshes,
     };
   }
+}
+function getRandomPalette(palettes: AssetPalette[]): AssetPalette {
+  if (palettes.length == 0) {
+    return {};
+  }
+
+  const idx = Math.floor(Math.random() * palettes.length);
+  return palettes[idx];
 }

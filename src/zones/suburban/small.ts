@@ -11,7 +11,7 @@ export function smallSuburbanTile1(game: Game): Zone {
       meshItem(
         "house1",
         game.assets.suburban.house01,
-        new Vector3(0.15, 0, 0.4),
+        new Vector3(-0.175, 0, 0.625),
         {
           rotation: new Vector3(0, Math.PI, 0),
         }
@@ -25,20 +25,20 @@ export function smallSuburbanTile1(game: Game): Zone {
       meshItem(
         "path",
         game.assets.suburban.path,
-        new Vector3(-0.175, 0, 0.35),
+        new Vector3(-0.175, 0, 0.45),
         {
-          scale: new Vector3(0.5, 0.5, 1),
+          scale: new Vector3(0.5, 0.5, 2.0),
         }
       ),
       meshItem(
         "tree_dw1",
         game.assets.suburban.tree_large,
-        new Vector3(-0.92, 0, 0.9)
+        new Vector3(-0.81, 0, 0.76)
       ),
       meshItem(
         "tree_dw2",
         game.assets.suburban.tree_small,
-        new Vector3(-0.81, 0, 0.85)
+        new Vector3(-0.6, 0, 0.7)
       ),
     ],
   };

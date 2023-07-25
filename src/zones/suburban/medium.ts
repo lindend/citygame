@@ -12,7 +12,7 @@ export function mediumSuburbanTile1(game: Game): Zone {
     items: [
       ...smallTile.items,
       ...[
-        new Vector3(0.35, 0, 0.7),
+        new Vector3(0.25, 0, 0.7),
         new Vector3(0.55, 0, 0.8),
         new Vector3(0.42, 0, 0.5),
       ].map((pos, i) =>

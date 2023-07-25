@@ -4,29 +4,26 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
 import { Scene } from "@babylonjs/core/scene";
 
-export type AssetPalette = {
-  materialColor: { [key: string]: Color3 };
-};
+export type AssetPalette = { [key: string]: Color3 };
 
 export type AssetSpec = {
   id: string;
   file: string;
-  center: Vector3;
   palettes: AssetPalette[];
 };
 
-export function asset(file: string, center?: Vector3): AssetSpec {
+export function asset(file: string, palettes?: AssetPalette[]): AssetSpec {
   return {
     id: file,
     file,
-    palettes: [],
-    center: center || Vector3.ZeroReadOnly,
+    palettes: palettes || [],
   };
 }
 
 export type LoadedAsset = {
   asset: AssetContainer;
   spec: AssetSpec;
+  center: Vector3;
 };
 
 export type AssetSpecs<T> = { [k in keyof T]: AssetSpec };
@@ -49,9 +46,29 @@ export async function loadAssets<TAssets extends {}>(
       fileName,
       scene
     );
+    const boundingVectors = assetContainer.rootNodes.map((r) =>
+      r.getHierarchyBoundingVectors(true)
+    );
+    boundingVectors.push(
+      ...assetContainer.transformNodes.map((t) =>
+        t.getHierarchyBoundingVectors(true)
+      )
+    );
+    const { min, max } = boundingVectors.reduce(({ min, max }, current) => {
+      return {
+        min: Vector3.Minimize(min, current.min),
+        max: Vector3.Maximize(max, current.max),
+      };
+    });
+
+    // Center is the amount the object needs to be moved to have it's
+    // origin at 0, _, 0 in model space
+    const center = max.add(min).multiply(new Vector3(-0.5, 0, -0.5));
+
     return {
       asset: assetContainer,
       spec: assets[asset],
+      center,
     };
   });
   const results = await Promise.all(promises);
