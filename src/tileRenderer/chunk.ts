@@ -3,7 +3,7 @@ import { Game } from "../game";
 import { AssetPalette, LoadedAsset } from "../assets/loadAssets";
 import { getTileAssets } from "./tileAssets";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { createBaseTile } from "./tileGeometry";
 import { Material } from "@babylonjs/core/Materials/material";
@@ -40,6 +40,11 @@ function getDiffuseColor(material: Nullable<Material>): Color3 {
   }
 }
 
+export type TileMeshAssignment = {
+  mesh: Mesh;
+  index: number;
+};
+
 export class Chunk {
   private name: string;
   private chunkNode: TransformNode;
@@ -53,16 +58,26 @@ export class Chunk {
     this.chunkNode = new TransformNode("chunk_" + name, game.scene);
   }
 
-  addTile(tile: Tile, position: Vector3) {
+  addTile(
+    tile: Tile,
+    position: Vector3,
+    rotation: number
+  ): TileMeshAssignment[] {
     const tileAssets = getTileAssets(tile, this.game);
-    const transform = Matrix.Translation(position.x, position.y, position.z);
+    const transform = Matrix.Compose(
+      Vector3.OneReadOnly,
+      Quaternion.FromEulerAngles(0, (rotation * Math.PI) / 2, 0),
+      position
+    );
+    let meshIndexes: TileMeshAssignment[] = [];
 
     if (!this.tileMesh) {
       this.tileMesh = createBaseTile("tile_base", this.game.scene);
       this.tileMesh.parent = this.chunkNode;
       this.tileMesh.receiveShadows = true;
     }
-    this.tileMesh.thinInstanceAdd(transform, false);
+    const tileMeshIdx = this.tileMesh.thinInstanceAdd(transform, false);
+    meshIndexes.push({ mesh: this.tileMesh, index: tileMeshIdx });
 
     for (let i = 0; i < tileAssets.length; ++i) {
       const ta = tileAssets[i];
@@ -85,6 +100,7 @@ export class Chunk {
           meshTransform.multiply(inverted)
         );
         const idx = mesh.mesh.thinInstanceAdd(workaroundTransform, false);
+        meshIndexes.push({ mesh: mesh.mesh, index: idx });
         const color = palette[mesh.materialName] || mesh.defaultColor;
         mesh.mesh.thinInstanceSetAttributeAt("color", idx, [
           color.r,
@@ -94,6 +110,7 @@ export class Chunk {
         ]);
       }
     }
+    return meshIndexes;
   }
 
   build() {

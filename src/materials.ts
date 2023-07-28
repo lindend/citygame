@@ -3,6 +3,7 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Scene } from "@babylonjs/core/scene";
 import { ZoneType } from "./zones/zone";
+import { GrassProceduralTexture } from "@babylonjs/procedural-textures/grass/grassProceduralTexture";
 
 export function tileZoneOutline(name: string, scene: Scene, color: Color3) {
   const material = new StandardMaterial(name, scene);
@@ -26,6 +27,7 @@ type TileZoneMaterials = {
 export type ZoneMaterials = { [key in ZoneType]: TileZoneMaterials };
 export type Materials = {
   zones: ZoneMaterials;
+  ground: StandardMaterial;
   default: StandardMaterial;
   default_inverted: StandardMaterial;
 };
@@ -56,6 +58,7 @@ export function materials(scene: Scene): Materials {
     },
     default: new StandardMaterial("default_citygame", scene),
     default_inverted: new StandardMaterial("default_citygame_inverted", scene),
+    ground: new StandardMaterial("ground"),
   };
 
   materials.default.specularColor = Color3.BlackReadOnly;
@@ -66,6 +69,18 @@ export function materials(scene: Scene): Materials {
   materials.default.sideOrientation = Material.ClockWiseSideOrientation;
   materials.default_inverted.sideOrientation =
     Material.CounterClockWiseSideOrientation;
+
+  materials.ground.diffuseColor = new Color3(0.47, 0.75, 0.02);
+  materials.ground.specularColor = Color3.BlackReadOnly;
+  materials.ground.disableDepthWrite = true;
+
+  const grassTexture = new GrassProceduralTexture("ground", 1024, scene);
+  grassTexture.grassColors = [
+    new Color3(0.47, 0.75, 0.02),
+    new Color3(0.41, 0.72, 0.01),
+    new Color3(0.96, 0.99, 0.91),
+  ];
+  materials.ground.diffuseTexture = grassTexture;
 
   return materials;
 }

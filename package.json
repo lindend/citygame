@@ -6,15 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "devDependencies": {
     "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vitest": "^0.33.0",
+    "vitest-mock-extended": "^1.1.4"
   },
   "dependencies": {
     "@babylonjs/core": "^6.10.0",
+    "@babylonjs/gui": "^6.13.0",
     "@babylonjs/inspector": "^6.10.0",
+    "@babylonjs/procedural-textures": "^6.14.0",
     "babylonjs-loaders": "^6.11.1",
     "earcut": "^2.2.4"
   }

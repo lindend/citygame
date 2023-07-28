@@ -15,6 +15,7 @@ export const mediumCommercialTiles = [
   mediumCommercialTile3,
   mediumCommercialTile4,
   mediumCommercialTile5,
+  mediumCommercialTile6,
 ];
 
 export function mediumCommercialTile1(game: Game): Zone {
@@ -45,5 +46,19 @@ export function mediumCommercialTile5(game: Game): Zone {
   return {
     size: "medium",
     items: [...smallCommercialTile5(game).items],
+  };
+}
+
+export function mediumCommercialTile6(game: Game): Zone {
+  return {
+    size: "medium",
+    items: [
+      meshItem(
+        "building1",
+        game.assets.commercial.skyscraperF,
+        new Vector3(0.5, 0, 0.5),
+        { rotation: new Vector3(0, Math.PI, 0) }
+      ),
+    ],
   };
 }

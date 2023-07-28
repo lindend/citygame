@@ -13,7 +13,7 @@ function hp(walls: Color3, roof: Color3): AssetPalette {
 const blackRoof = new Color3(0.15, 0.15, 0.15);
 const brickRoof = new Color3(0.8, 0.44, 0.25);
 
-const whiteWalls = new Color3(0.92, 0.92, 0.92);
+const whiteWalls = new Color3(0.97, 0.97, 0.97);
 const yellowWalls = new Color3(0.99, 0.84, 0.22);
 const blueWalls = new Color3(0, 0.1, 0.6);
 const brickWalls = new Color3(0.8, 0.44, 0.25);
