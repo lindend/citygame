@@ -81,25 +81,32 @@ export class Chunk {
 
     for (let i = 0; i < tileAssets.length; ++i) {
       const ta = tileAssets[i];
-      const assetId = ta.asset.spec.id + (ta.inverted ? "_inv" : "");
+      const inverted = ta.inverted && !ta.asset.spec.symmetric;
+      const assetId = ta.asset.spec.id + (inverted ? "_inv" : "");
       if (!this.meshes[assetId]) {
-        this.meshes[assetId] = this.addAsset(assetId, ta.asset, ta.inverted);
+        this.meshes[assetId] = this.addAsset(assetId, ta.asset, inverted);
       }
 
       const meshes = this.meshes[assetId];
       const palette = getRandomPalette(ta.asset.spec.palettes);
       for (let mesh of meshes.meshes) {
-        const meshTransform = ta.transform.multiply(transform);
+        let meshTransform = ta.transform.multiply(transform);
         // Workaround for a bug where the built-in mesh is pre-multiplied with
         // the thin instance transform
         const builtInMeshTransform = mesh.mesh.getWorldMatrix();
         let inverted = Matrix.Invert(builtInMeshTransform);
         // meshTrans.mult(inverted) -> Inv * MeshTrans
         // BuiltIn.mult(Inv*MeshTrans) -> Inv*MeshTrans*BuiltIn
-        const workaroundTransform = builtInMeshTransform.multiply(
+        meshTransform = builtInMeshTransform.multiply(
           meshTransform.multiply(inverted)
         );
-        const idx = mesh.mesh.thinInstanceAdd(workaroundTransform, false);
+        // If the mesh is symmetric, we flip it as the last part of the transform
+        // which keeps the position but inverts the mesh and we don't have to
+        // flip winding order and thus saves draw calls
+        if (ta.inverted && ta.asset.spec.symmetric) {
+          meshTransform = Matrix.Scaling(-1, 1, 1).multiply(meshTransform);
+        }
+        const idx = mesh.mesh.thinInstanceAdd(meshTransform, false);
         meshIndexes.push({ mesh: mesh.mesh, index: idx });
         const color = palette[mesh.materialName] || mesh.defaultColor;
         mesh.mesh.thinInstanceSetAttributeAt("color", idx, [
@@ -139,7 +146,7 @@ export class Chunk {
     const meshes = meshNodes.map((m) => {
       m.makeGeometryUnique();
 
-      this.game.shadows.addShadowCaster(m);
+      this.game.shadows?.addShadowCaster(m);
       m.receiveShadows = true;
 
       // Work-around for a bug(?) in babylonjs that prevents inverted meshes

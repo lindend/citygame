@@ -1,7 +1,7 @@
 import { Scene } from "@babylonjs/core/scene";
 import { asset, loadAssets } from "./loadAssets";
 
-const ra = (file: string) => asset(file, []);
+const ra = (file: string) => asset(file, true, []);
 
 const assetRoot = "./assets/city/roads/";
 const assets = {

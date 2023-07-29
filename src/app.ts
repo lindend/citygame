@@ -63,15 +63,15 @@ class App {
     );
     this.camera.attachControl(canvas, true);
 
-    var ssao = new SSAO2RenderingPipeline(
-      "ssao",
-      scene,
-      0.5,
-      [this.camera],
-      true
-    );
-    ssao.radius = 0.5;
-    ssao.samples = 16;
+    // var ssao = new SSAO2RenderingPipeline(
+    //   "ssao",
+    //   scene,
+    //   0.5,
+    //   [this.camera],
+    //   true
+    // );
+    // ssao.radius = 0.5;
+    // ssao.samples = 16;
 
     // hide/show the Inspector
     window.addEventListener("keydown", (ev) => {
@@ -117,9 +117,10 @@ class App {
 
     const shadows = new CascadedShadowGenerator(2048, sunLight);
     shadows.autoCalcDepthBounds = true;
+    shadows.lambda = 1;
     shadows.bias = 0.0027;
     shadows.normalBias = 0;
-    shadows.stabilizeCascades = true;
+    shadows.numCascades = 3;
 
     // let guiTexture = AdvancedDynamicTexture.CreateFullscreenUI(
     //   "MainMenu",

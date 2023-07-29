@@ -76,13 +76,13 @@ const palettes = {
 
 const assetRoot = "./assets/city/suburban/";
 const assets = {
-  house01: asset("house_type01.glb", palettes.house),
-  house02: asset("house_type02.glb"),
-  house05: asset("house_type05.glb"),
-  tree_large: asset("tree_large.glb", palettes.tree),
-  tree_small: asset("tree_small.glb", palettes.tree),
-  driveway: asset("driveway_short.glb"),
-  path: asset("path_short.glb"),
+  house01: asset("house_type01.glb", false, palettes.house),
+  house02: asset("house_type02.glb", false),
+  house05: asset("house_type05.glb", false),
+  tree_large: asset("tree_large.glb", true, palettes.tree),
+  tree_small: asset("tree_small.glb", true, palettes.tree),
+  driveway: asset("driveway_short.glb", true),
+  path: asset("path_short.glb", true),
 };
 
 export function loadSuburbanAssets(scene: Scene, root: string = assetRoot) {

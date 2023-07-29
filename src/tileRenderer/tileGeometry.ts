@@ -12,7 +12,7 @@ const baseTilePoints = [
   new Vector3(1, 0, 1),
 ];
 
-const tileZonePoints: { [key in ZoneSize]: Vector3[] } = {
+export const tileZonePoints: { [key in ZoneSize]: Vector3[] } = {
   large: [
     new Vector3(-1, 0, 1),
     new Vector3(1, 0, 1),
@@ -36,6 +36,26 @@ export function createBaseTile(name: string, scene: Scene) {
   return MeshBuilder.ExtrudePolygon(
     name,
     { shape: baseTilePoints, depth: 0.1 },
+    scene,
+    earcut
+  );
+}
+
+export function createBaseTileOutline(
+  name: string,
+  scene: Scene,
+  thickness: number
+) {
+  const offset = 1 + thickness;
+  const points = [
+    new Vector3(-offset, 0, offset),
+    new Vector3(-offset, 0, -offset),
+    new Vector3(offset, 0, -offset),
+    new Vector3(offset, 0, offset),
+  ];
+  return MeshBuilder.ExtrudePolygon(
+    name,
+    { shape: points, depth: 0.1, holes: [baseTilePoints] },
     scene,
     earcut
   );

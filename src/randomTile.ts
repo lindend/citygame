@@ -9,7 +9,7 @@ import {
 
 function getNumRoads() {
   let rng = Math.random();
-  if (rng <= 0.7) {
+  if (rng <= 0.5) {
     return 2;
   } else {
     return 3;

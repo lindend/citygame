@@ -21,13 +21,13 @@ function sb(
 
 const assetRoot = "./assets/city/commercial/";
 const assets = {
-  small_buildingA: asset("small_buildingA.glb"),
-  small_buildingB: asset("small_buildingB.glb"),
-  small_buildingC: asset("small_buildingC.glb"),
-  small_buildingD: asset("small_buildingD.glb"),
-  small_buildingE: asset("small_buildingE.glb"),
-  small_buildingF: asset("small_buildingF.glb"),
-  skyscraperF: asset("skyscraperF.glb"),
+  small_buildingA: asset("small_buildingA.glb", true),
+  small_buildingB: asset("small_buildingB.glb", false),
+  small_buildingC: asset("small_buildingC.glb", false),
+  small_buildingD: asset("small_buildingD.glb", true),
+  small_buildingE: asset("small_buildingE.glb", false),
+  small_buildingF: asset("small_buildingF.glb", true),
+  skyscraperF: asset("skyscraperF.glb", true),
 };
 
 export function loadCommercialAssets(scene: Scene, root: string = assetRoot) {

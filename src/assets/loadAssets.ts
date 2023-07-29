@@ -9,13 +9,19 @@ export type AssetPalette = { [key: string]: Color3 };
 export type AssetSpec = {
   id: string;
   file: string;
+  symmetric: boolean;
   palettes: AssetPalette[];
 };
 
-export function asset(file: string, palettes?: AssetPalette[]): AssetSpec {
+export function asset(
+  file: string,
+  symmetric: boolean,
+  palettes?: AssetPalette[]
+): AssetSpec {
   return {
     id: file,
     file,
+    symmetric,
     palettes: palettes || [],
   };
 }

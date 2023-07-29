@@ -80,6 +80,7 @@ export function materials(scene: Scene): Materials {
     new Color3(0.41, 0.72, 0.01),
     new Color3(0.96, 0.99, 0.91),
   ];
+  grassTexture.refreshRate = 0;
   materials.ground.diffuseTexture = grassTexture;
 
   return materials;
