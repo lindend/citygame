@@ -23,23 +23,25 @@ import mainMenu from "./gui/mainMenu.json";
 import { TileRotation, World } from "./world/world";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { InputManager } from "./input/inputManager";
 
 class App {
   engine: Engine;
   scene: Scene;
   camera: Camera;
   game?: Game;
+  canvas: HTMLCanvasElement;
 
   constructor() {
     // create the canvas html element and attach it to the webpage
-    var canvas = document.createElement("canvas");
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.id = "gameCanvas";
-    document.body.appendChild(canvas);
+    this.canvas = document.createElement("canvas");
+    this.canvas.style.width = "100%";
+    this.canvas.style.height = "100%";
+    this.canvas.id = "gameCanvas";
+    document.body.appendChild(this.canvas);
 
     // initialize babylon scene and engine
-    this.engine = new Engine(canvas, true, { stencil: true });
+    this.engine = new Engine(this.canvas, true, { stencil: true });
     const scene = new Scene(this.engine);
     scene.performancePriority = ScenePerformancePriority.Aggressive;
 
@@ -61,7 +63,6 @@ class App {
       Vector3.Zero(),
       scene
     );
-    this.camera.attachControl(canvas, true);
 
     // var ssao = new SSAO2RenderingPipeline(
     //   "ssao",
@@ -96,6 +97,7 @@ class App {
       update(this.game, delta);
     }
     this.scene.render();
+    this.game?.input.update();
   }
 
   async loadScene() {
@@ -139,7 +141,7 @@ class App {
         width: 10000,
         height: 10000,
         sideOrientation: Mesh.DOUBLESIDE,
-        frontUVs: new Vector4(0, 0, 1000, 1000),
+        frontUVs: new Vector4(0, 0, 200, 200),
       },
       this.scene
     );
@@ -148,12 +150,15 @@ class App {
     ground.rotate(Vector3.RightReadOnly, Math.PI / 2);
     ground.receiveShadows = true;
 
+    const input = new InputManager(this.canvas);
+
     const game: Game = {
       scene: this.scene,
       camera: this.camera,
       shadows: shadows,
       materials: mats,
       ground: ground,
+      input,
       state: new EmptyGameState(),
       assets: {
         roads: roadAssets,

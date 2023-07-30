@@ -7,7 +7,6 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import { Materials } from "./materials";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Matrix, Vector2, Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { Camera } from "@babylonjs/core/Cameras/camera";
 import {
   createBaseTile,
   createBaseTileOutline,
@@ -21,11 +20,15 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { IPointerEvent } from "@babylonjs/core/Events/deviceInputEvents";
 import { GlowLayer } from "@babylonjs/core/Layers/glowLayer";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { InputManager } from "./input/inputManager";
+import { CameraController } from "./cameraController";
+import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 
 export type Game = {
   scene: Scene;
-  camera: Camera;
+  camera: ArcRotateCamera;
   shadows?: ShadowGenerator;
+  input: InputManager;
   materials: Materials;
   ground: Mesh;
   state: IGameState;
@@ -54,6 +57,8 @@ export class PlayingGameState implements IGameState {
   private game: Game;
   private world: World;
 
+  private camController: CameraController;
+
   private previewPlaceTile: Mesh;
   private previewPlaceTileOutline: Mesh;
   private previewTileMeshes: TransformNode;
@@ -70,6 +75,7 @@ export class PlayingGameState implements IGameState {
   constructor(game: Game, world: World) {
     this.game = game;
     this.world = world;
+    this.camController = new CameraController(game.camera, game.input);
 
     this.glowLayer = new GlowLayer("placeTileHighlight", this.game.scene);
     this.glowLayer.intensity = 0.6;
@@ -240,6 +246,7 @@ export class PlayingGameState implements IGameState {
 
   update(delta: number): void {
     this.updatePointerHighlight();
+    this.camController.update(delta);
   }
 }
 
