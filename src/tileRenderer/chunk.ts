@@ -1,5 +1,5 @@
 import { Tile } from "../world/tile";
-import { Game } from "../game";
+import { Game } from "../game/game";
 import { AssetPalette, LoadedAsset } from "../assets/loadAssets";
 import { getTileAssets } from "./tileAssets";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
@@ -153,10 +153,17 @@ export class Chunk {
       // from listening to side orientation from materials.
       m.overrideMaterialSideOrientation = null;
       const oldMaterial = m.material;
+
+      if (oldMaterial?.name == "window") {
+        m.material = !inverted
+          ? this.game.materials.window
+          : this.game.materials.window_inverted;
+      } else {
+        m.material = !inverted
+          ? this.game.materials.default
+          : this.game.materials.default_inverted;
+      }
       const defaultColor = getDiffuseColor(oldMaterial);
-      m.material = !inverted
-        ? this.game.materials.default
-        : this.game.materials.default_inverted;
 
       m.thinInstanceRegisterAttribute("color", 4);
       return {

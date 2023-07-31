@@ -1,4 +1,4 @@
-import { Game } from "../game";
+import { Game } from "../game/game";
 import { mediumCommercialTiles } from "./commercial/medium";
 import { mediumSuburbanTiles } from "./suburban/medium";
 import { Zone, ZoneSize, ZoneType } from "./zone";

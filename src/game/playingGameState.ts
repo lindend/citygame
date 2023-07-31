@@ -1,51 +1,22 @@
-import { LoadedAssets } from "./assets/loadAssets";
-import { loadRoadAssets } from "./assets/roadAssets";
-import { loadSuburbanAssets } from "./assets/suburbanAssets";
-import { loadCommercialAssets } from "./assets/commercialAssets";
-import { Scene } from "@babylonjs/core/scene";
-import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
-import { Materials } from "./materials";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Matrix, Vector2, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import {
   createBaseTile,
   createBaseTileOutline,
-} from "./tileRenderer/tileGeometry";
+} from "../tileRenderer/tileGeometry";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
-import { TileRotation, World } from "./world/world";
-import { Tile } from "./world/tile";
-import { randomTile } from "./randomTile";
-import { getTileAssets } from "./tileRenderer/tileAssets";
+import { TileRotation, World } from "../world/world";
+import { Tile } from "../world/tile";
+import { randomTile } from "../randomTile";
+import { getTileAssets } from "../tileRenderer/tileAssets";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { IPointerEvent } from "@babylonjs/core/Events/deviceInputEvents";
 import { GlowLayer } from "@babylonjs/core/Layers/glowLayer";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { InputManager } from "./input/inputManager";
-import { CameraController } from "./cameraController";
-import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
-
-export type Game = {
-  scene: Scene;
-  camera: ArcRotateCamera;
-  shadows?: ShadowGenerator;
-  input: InputManager;
-  materials: Materials;
-  ground: Mesh;
-  state: IGameState;
-  assets: {
-    roads: LoadedAssets<typeof loadRoadAssets>;
-    suburban: LoadedAssets<typeof loadSuburbanAssets>;
-    commercial: LoadedAssets<typeof loadCommercialAssets>;
-  };
-};
-
-export interface IGameState {
-  update(delta: number): void;
-}
-
-export class EmptyGameState implements IGameState {
-  update(delta: number): void {}
-}
+import { CameraController } from "../cameraController";
+import { DayNightCycleController } from "../environment/dayNightCycleController";
+import { Game } from "./game";
+import { IGameState } from "./gameState";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 
 enum PlaceHighlightMode {
   None,
@@ -58,6 +29,7 @@ export class PlayingGameState implements IGameState {
   private world: World;
 
   private camController: CameraController;
+  private dayNight: DayNightCycleController;
 
   private previewPlaceTile: Mesh;
   private previewPlaceTileOutline: Mesh;
@@ -76,6 +48,7 @@ export class PlayingGameState implements IGameState {
     this.game = game;
     this.world = world;
     this.camController = new CameraController(game.camera, game.input);
+    this.dayNight = new DayNightCycleController(game);
 
     this.glowLayer = new GlowLayer("placeTileHighlight", this.game.scene);
     this.glowLayer.intensity = 0.6;
@@ -247,9 +220,6 @@ export class PlayingGameState implements IGameState {
   update(delta: number): void {
     this.updatePointerHighlight();
     this.camController.update(delta);
+    this.dayNight.update(delta);
   }
-}
-
-export function update(game: Game, delta: number) {
-  game.state.update(delta);
 }

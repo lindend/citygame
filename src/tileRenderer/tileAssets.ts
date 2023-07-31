@@ -1,5 +1,5 @@
 import "@babylonjs/loaders/glTF/2.0";
-import { Game } from "../game";
+import { Game } from "../game/game";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { LoadedAsset } from "../assets/loadAssets";
 import { zoneFactory } from "../zones/zoneFactory";

@@ -30,7 +30,15 @@ export type Materials = {
   ground: StandardMaterial;
   default: StandardMaterial;
   default_inverted: StandardMaterial;
+  window: StandardMaterial;
+  window_inverted: StandardMaterial;
 };
+
+function createStandardMaterial(name: string, scene: Scene) {
+  const material = new StandardMaterial(name, scene);
+  material.specularColor = Color3.BlackReadOnly;
+  return material;
+}
 
 export function materials(scene: Scene): Materials {
   const materials = {
@@ -56,22 +64,24 @@ export function materials(scene: Scene): Materials {
         ),
       },
     },
-    default: new StandardMaterial("default_citygame", scene),
-    default_inverted: new StandardMaterial("default_citygame_inverted", scene),
-    ground: new StandardMaterial("ground"),
+    default: createStandardMaterial("default_citygame", scene),
+    default_inverted: createStandardMaterial(
+      "default_citygame_inverted",
+      scene
+    ),
+    ground: createStandardMaterial("ground", scene),
+    window: createStandardMaterial("citygame_window", scene),
+    window_inverted: createStandardMaterial("citygame_window_inverted", scene),
   };
 
-  materials.default.specularColor = Color3.BlackReadOnly;
-  materials.default_inverted.specularColor = Color3.BlackReadOnly;
-  // materials.default.diffuseColor = Color3.Blue();
-  // materials.default_inverted.diffuseColor = Color3.Blue();
-
   materials.default.sideOrientation = Material.ClockWiseSideOrientation;
+  materials.window.sideOrientation = Material.ClockWiseSideOrientation;
   materials.default_inverted.sideOrientation =
+    Material.CounterClockWiseSideOrientation;
+  materials.window_inverted.sideOrientation =
     Material.CounterClockWiseSideOrientation;
 
   materials.ground.diffuseColor = new Color3(0.47, 0.75, 0.02);
-  materials.ground.specularColor = Color3.BlackReadOnly;
   materials.ground.disableDepthWrite = true;
 
   const grassTexture = new GrassProceduralTexture("ground", 1024, scene);

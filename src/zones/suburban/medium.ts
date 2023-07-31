@@ -1,6 +1,6 @@
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Zone, meshItem } from "../zone";
-import { Game } from "../../game";
+import { Game } from "../../game/game";
 import { smallSuburbanTile1 as smallSuburbanTile1 } from "./small";
 
 export const mediumSuburbanTiles = [mediumSuburbanTile1];

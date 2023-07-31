@@ -1,5 +1,5 @@
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { Game } from "../../game";
+import { Game } from "../../game/game";
 import { Zone, meshItem } from "../zone";
 import {
   smallCommercialTile1,
