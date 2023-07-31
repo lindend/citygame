@@ -12,6 +12,7 @@ import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { IGameState } from "./gameState";
 import { Sky } from "../environment/sky";
+import { Time } from "../environment/time";
 
 export type Game = {
   scene: Scene;
@@ -24,6 +25,7 @@ export type Game = {
   state: IGameState;
   sunLight: DirectionalLight;
   ambientLight: HemisphericLight;
+  time: Time;
   assets: {
     roads: LoadedAssets<typeof loadRoadAssets>;
     suburban: LoadedAssets<typeof loadSuburbanAssets>;
@@ -32,6 +34,7 @@ export type Game = {
 };
 
 export function update(game: Game, delta: number) {
+  game.time.update(delta);
   game.state.update(delta);
 
   game.scene.clearColor = game.sky.getSkyColor();

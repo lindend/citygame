@@ -10,7 +10,7 @@ const moveSpeed = 2;
 const turnSpeed = 2;
 const minBeta = 1.2;
 const minBetaHeight = minRadius;
-const maxBeta = 0.5;
+const maxBeta = 0.6;
 const maxBetaHeight = 30;
 
 const turnLeftKeys = ["ArrowLeft", "q"];

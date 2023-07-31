@@ -26,6 +26,7 @@ import { Game, update } from "./game/game";
 import { PlayingGameState } from "./game/playingGameState";
 import { EmptyGameState } from "./game/gameState";
 import { Sky } from "./environment/sky";
+import { Time } from "./environment/time";
 
 class App {
   engine: Engine;
@@ -167,6 +168,7 @@ class App {
       ambientLight,
       input,
       sky,
+      time: new Time(),
       state: new EmptyGameState(),
       assets: {
         roads: roadAssets,

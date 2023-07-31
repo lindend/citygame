@@ -17,6 +17,7 @@ import { DayNightCycleController } from "../environment/dayNightCycleController"
 import { Game } from "./game";
 import { IGameState } from "./gameState";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { WeatherController } from "../environment/weathers/weatherController";
 
 enum PlaceHighlightMode {
   None,
@@ -30,6 +31,7 @@ export class PlayingGameState implements IGameState {
 
   private camController: CameraController;
   private dayNight: DayNightCycleController;
+  private weather: WeatherController;
 
   private previewPlaceTile: Mesh;
   private previewPlaceTileOutline: Mesh;
@@ -49,6 +51,7 @@ export class PlayingGameState implements IGameState {
     this.world = world;
     this.camController = new CameraController(game.camera, game.input);
     this.dayNight = new DayNightCycleController(game);
+    this.weather = new WeatherController(game);
 
     this.glowLayer = new GlowLayer("placeTileHighlight", this.game.scene);
     this.glowLayer.intensity = 0.6;
@@ -220,6 +223,7 @@ export class PlayingGameState implements IGameState {
   update(delta: number): void {
     this.updatePointerHighlight();
     this.camController.update(delta);
+    this.weather.update(delta);
     this.dayNight.update(delta);
   }
 }
