@@ -1,20 +1,22 @@
 import { ParticleSystem } from "@babylonjs/core/Particles/particleSystem";
 import { Game } from "../../game/game";
-import { IWeather } from "./weather";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { BoxParticleEmitter } from "@babylonjs/core/Particles/EmitterTypes/boxParticleEmitter";
 import { Color4 } from "@babylonjs/core";
+import { Cloudy } from "./cloudy";
 
 export const LightRain = 200;
-export const HeavyRain = 2000;
+export const HeavyRain = 1500;
 const rainParticleColor = 0.3;
 
-export class Rain implements IWeather {
+export class Rain extends Cloudy {
   private rainParticleSystem: ParticleSystem;
   private emitter: BoxParticleEmitter;
 
-  constructor(private rate: number, private game: Game) {
+  constructor(private rate: number, cloudCoverage: number, game: Game) {
+    super(cloudCoverage, game);
+
     this.rainParticleSystem = new ParticleSystem(
       "weather_rain",
       10000,
@@ -45,7 +47,9 @@ export class Rain implements IWeather {
     this.rainParticleSystem.color2 = particleColor;
   }
 
-  update(delta: number): void {
+  update(delta: number) {
+    super.update(delta);
+
     const beta = this.game.camera.beta;
     this.rainParticleSystem.defaultViewMatrix = Matrix.LookAtLH(
       new Vector3(0, 0, 0),
@@ -54,11 +58,18 @@ export class Rain implements IWeather {
     );
   }
 
-  activate(): void {
-    this.rainParticleSystem.start();
+  setIntensity(intensity: number) {
+    super.setIntensity(intensity);
+    this.rainParticleSystem.emitRate = this.rate * intensity;
   }
 
-  deactivate(): void {
+  activate() {
+    this.rainParticleSystem.start();
+    return super.activate();
+  }
+
+  deactivate() {
+    super.deactivate();
     this.rainParticleSystem.stop();
   }
 }

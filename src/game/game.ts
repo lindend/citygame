@@ -36,7 +36,4 @@ export type Game = {
 export function update(game: Game, delta: number) {
   game.time.update(delta);
   game.state.update(delta);
-
-  game.scene.clearColor = game.sky.getSkyColor();
-  game.scene.fogColor = game.sky.getFogColor();
 }

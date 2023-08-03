@@ -1,10 +1,5 @@
 Todo-list:
 
-- Weather
-
-* Rain sounds
-
-- Skybox
 - Music
 - Cars moving around
 - City sounds

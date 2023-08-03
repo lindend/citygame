@@ -33,8 +33,8 @@ export class DayNightCycleController {
       -Math.sin(sunProgress),
       Math.sqrt(1 - sunXFactor * sunXFactor) * cosAngle
     );
-    this.game.sunLight.direction = sunAngle;
-    this.game.sunLight.intensity = Math.sin(sunProgress);
+    this.game.sky.setSunAngle(sunAngle, "DayNightCycle", 1);
+    this.game.sky.setSunIntensity(Math.sin(sunProgress), "DayNightCycle", 1);
 
     // Glowing windows
     if (time < dawn || time > dusk) {
@@ -58,9 +58,9 @@ export class DayNightCycleController {
       let ramp =
         progress(time - skyRampOffset, dawn - skyRampTime, dawn) *
         (1 - progress(time + skyRampOffset, dusk, dusk + skyRampTime));
-      this.game.sky.setIntensity(ramp);
+      this.game.sky.setSkyColorIntensity(ramp, "DayNightCycle", 1);
     } else {
-      this.game.sky.setIntensity(0);
+      this.game.sky.setSkyColorIntensity(0, "DayNightCycle", 1);
     }
   }
 }
