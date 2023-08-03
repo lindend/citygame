@@ -1,4 +1,4 @@
-const timeFactor = 6000;
+const timeFactor = 600;
 
 export class Time {
   private time: number = 8;
