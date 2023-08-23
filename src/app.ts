@@ -25,6 +25,7 @@ import { EmptyGameState } from "./game/gameState";
 import { Sky } from "./environment/sky";
 import { Time } from "./environment/time";
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
+import "@babylonjs/core/Rendering/depthRendererSceneComponent";
 
 class App {
   engine: Engine;
