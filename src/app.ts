@@ -26,6 +26,7 @@ import { Sky } from "./environment/sky";
 import { Time } from "./environment/time";
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Rendering/depthRendererSceneComponent";
+import "@babylonjs/core/Culling/ray";
 
 class App {
   engine: Engine;
