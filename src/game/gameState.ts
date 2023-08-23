@@ -3,5 +3,5 @@ export interface IGameState {
 }
 
 export class EmptyGameState implements IGameState {
-  update(delta: number): void {}
+  update(_delta: number): void {}
 }

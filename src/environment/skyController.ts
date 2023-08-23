@@ -3,7 +3,7 @@ import { Game } from "../game/game";
 export class SkyController {
   constructor(private game: Game) {}
 
-  update(delta: number) {
+  update(_delta: number) {
     const sky = this.game.sky;
     this.game.scene.clearColor = sky.getSkyColor();
     this.game.scene.fogColor = sky.getFogColor();

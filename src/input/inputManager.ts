@@ -12,7 +12,7 @@ export class InputManager {
   private mouseEvents: MouseEvent[] = [];
   private keyEvents: KeyboardEvent[] = [];
 
-  constructor(private canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement) {
     window.addEventListener("keydown", (evt) => {
       this.keyEvents.push(evt);
     });

@@ -58,6 +58,10 @@ export class Chunk {
     this.chunkNode = new TransformNode("chunk_" + name, game.scene);
   }
 
+  getName() {
+    return this.name;
+  }
+
   addTile(
     tile: Tile,
     position: Vector3,

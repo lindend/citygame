@@ -2,9 +2,8 @@ import { ParticleSystem } from "@babylonjs/core/Particles/particleSystem";
 import { Game } from "../../game/game";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { BoxParticleEmitter } from "@babylonjs/core/Particles/EmitterTypes/boxParticleEmitter";
-import { Color4 } from "@babylonjs/core";
 import { Cloudy } from "./cloudy";
+import { Color4 } from "@babylonjs/core/Maths/math.color";
 
 export const LightRain = 200;
 export const HeavyRain = 1500;
@@ -12,7 +11,6 @@ const rainParticleColor = 0.3;
 
 export class Rain extends Cloudy {
   private rainParticleSystem: ParticleSystem;
-  private emitter: BoxParticleEmitter;
 
   constructor(private rate: number, cloudCoverage: number, game: Game) {
     super(cloudCoverage, game);
@@ -31,7 +29,7 @@ export class Rain extends Cloudy {
     this.rainParticleSystem.minLifeTime = 1;
     this.rainParticleSystem.maxLifeTime = 1;
     this.rainParticleSystem.gravity = new Vector3(0, -20, 0);
-    this.emitter = this.rainParticleSystem.createBoxEmitter(
+    this.rainParticleSystem.createBoxEmitter(
       new Vector3(0, -10, 0),
       new Vector3(0, -10, 0),
       new Vector3(-5, 1, 0),

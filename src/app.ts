@@ -1,11 +1,11 @@
-import "@babylonjs/core/Debug/debugLayer";
-import "@babylonjs/inspector";
+// import "@babylonjs/core/Debug/debugLayer";
+// import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF/2.0";
 import { loadRoadAssets } from "./assets/roadAssets";
 import { loadSuburbanAssets } from "./assets/suburbanAssets";
 import { loadCommercialAssets } from "./assets/commercialAssets";
 import { Engine } from "@babylonjs/core/Engines/engine";
-import { Scene, ScenePerformancePriority } from "@babylonjs/core/scene";
+import { Scene } from "@babylonjs/core/scene";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { Vector2, Vector3, Vector4 } from "@babylonjs/core/Maths/math.vector";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
@@ -15,9 +15,6 @@ import { materials } from "./materials";
 import { randomTile } from "./randomTile";
 import { Chunk } from "./tileRenderer/chunk";
 import { CascadedShadowGenerator } from "@babylonjs/core/Lights/Shadows/cascadedShadowGenerator";
-import { SSAO2RenderingPipeline } from "@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline";
-import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
-import mainMenu from "./gui/mainMenu.json";
 import { TileRotation, World } from "./world/world";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
@@ -78,16 +75,16 @@ class App {
     // ssao.samples = 16;
 
     // hide/show the Inspector
-    window.addEventListener("keydown", (ev) => {
-      // Shift+Ctrl+Alt+I
-      if (ev.code === "KeyI") {
-        if (scene.debugLayer.isVisible()) {
-          scene.debugLayer.hide();
-        } else {
-          scene.debugLayer.show();
-        }
-      }
-    });
+    // window.addEventListener("keydown", (ev) => {
+    //   // Shift+Ctrl+Alt+I
+    //   if (ev.code === "KeyI") {
+    //     if (scene.debugLayer.isVisible()) {
+    //       scene.debugLayer.hide();
+    //     } else {
+    //       scene.debugLayer.show();
+    //     }
+    //   }
+    // });
     this.scene = scene;
 
     // run the main render loop
@@ -196,8 +193,6 @@ class App {
       return false;
     };
 
-    world.place(randomTile(), Vector2.ZeroReadOnly, 0, true);
-
     let newRandomTile = () => {
       while (true) {
         const unconnectedRoads = world.getUnconnectedRoads();
@@ -208,6 +203,20 @@ class App {
         }
       }
     };
+
+    // world.place(
+    //   new Tile([
+    //     RoadSide(0, 0),
+    //     CommercialSide(0),
+    //     CommercialSide(0),
+    //     RoadSide(0, 0),
+    //   ]),
+    //   Vector2.ZeroReadOnly,
+    //   0,
+    //   true
+    // );
+
+    world.place(randomTile(), Vector2.ZeroReadOnly, 0, true);
 
     for (let x = 0; x < 10; ++x) {
       for (let y = 0; y < 10; ++y) {

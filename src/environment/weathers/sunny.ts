@@ -2,8 +2,8 @@ import { DefaultAmbientColor, DefaultSkyColor, DefaultSunColor } from "../sky";
 import { IWeather, WeatherEnvironment } from "./weather";
 
 export class Sunny implements IWeather {
-  update(delta: number) {}
-  setIntensity(intensity: number) {}
+  update(_delta: number) {}
+  setIntensity(_intensity: number) {}
   activate(): WeatherEnvironment {
     return {
       sunColor: DefaultSunColor,

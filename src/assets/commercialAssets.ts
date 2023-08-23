@@ -1,23 +1,22 @@
 import { Scene } from "@babylonjs/core/scene";
-import { AssetPalette, asset, loadAssets } from "./loadAssets";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { asset, loadAssets } from "./loadAssets";
 
 // Small building palette
-function sb(
-  walls: Color3,
-  border: Color3,
-  windows: Color3,
-  bottomFloor: Color3,
-  roof: Color3
-): AssetPalette {
-  return {
-    _defaultMat: walls,
-    border,
-    window: windows,
-    door: bottomFloor,
-    roof,
-  };
-}
+// function sb(
+//   walls: Color3,
+//   border: Color3,
+//   windows: Color3,
+//   bottomFloor: Color3,
+//   roof: Color3
+// ): AssetPalette {
+//   return {
+//     _defaultMat: walls,
+//     border,
+//     window: windows,
+//     door: bottomFloor,
+//     roof,
+//   };
+// }
 
 const assetRoot = "./assets/city/commercial/";
 const assets = {

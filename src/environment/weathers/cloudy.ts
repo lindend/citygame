@@ -9,8 +9,8 @@ export const OvercastCoverage = 0.8;
 export class Cloudy implements IWeather {
   constructor(private coverage: number, protected game: Game) {}
 
-  update(delta: number) {}
-  setIntensity(intensity: number) {}
+  update(_delta: number) {}
+  setIntensity(_intensity: number) {}
 
   activate(): WeatherEnvironment {
     return {

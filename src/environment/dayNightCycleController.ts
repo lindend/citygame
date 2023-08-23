@@ -23,7 +23,7 @@ export class DayNightCycleController {
     this.glowLayer.blurKernelSize = 25;
   }
 
-  update(delta: number) {
+  update(_delta: number) {
     const time = this.game.time.getTime();
     // Sun
     const sunProgress = progress(time, dawn, dusk) * Math.PI;

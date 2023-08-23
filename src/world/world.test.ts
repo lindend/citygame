@@ -1,4 +1,4 @@
-import { test, describe, expect, vi, beforeEach } from "vitest";
+import { test, describe, expect, beforeEach } from "vitest";
 import { RoadSide, SuburbanSide, Tile } from "./tile";
 import { World } from "./world";
 import { Chunk } from "../tileRenderer/chunk";
@@ -20,7 +20,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile0, new Vector2(0, 0), 0)).toBeTruthy();
+        expect(world.place(tile0, new Vector2(0, 0), 0, true)).toBeTruthy();
       });
 
       test("valid", () => {
@@ -30,7 +30,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           RoadSide(0, 0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(1, 0), 0)).toBeTruthy();
+        expect(world.place(tile1, new Vector2(1, 0), 0, false)).toBeTruthy();
       });
 
       test("invalid", () => {
@@ -40,7 +40,7 @@ describe("world", () => {
           RoadSide(0, 0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(1, 0), 0)).toBeFalsy();
+        expect(world.place(tile1, new Vector2(1, 0), 0, false)).toBeFalsy();
       });
     });
 
@@ -54,7 +54,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           RoadSide(0, 0), // Left
         ]);
-        expect(world.place(tile0, new Vector2(0, 0), 0)).toBeTruthy();
+        expect(world.place(tile0, new Vector2(0, 0), 0, false)).toBeTruthy();
       });
 
       test("valid", () => {
@@ -64,7 +64,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           RoadSide(0, 0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(-1, 0), 0)).toBeTruthy();
+        expect(world.place(tile1, new Vector2(-1, 0), 0, false)).toBeTruthy();
       });
 
       test("invalid", () => {
@@ -74,7 +74,7 @@ describe("world", () => {
           RoadSide(0, 0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(-1, 0), 0)).toBeFalsy();
+        expect(world.place(tile1, new Vector2(-1, 0), 0, false)).toBeFalsy();
       });
     });
 
@@ -88,7 +88,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile0, new Vector2(0, 0), 0)).toBeTruthy();
+        expect(world.place(tile0, new Vector2(0, 0), 0, false)).toBeTruthy();
       });
 
       test("valid", () => {
@@ -98,7 +98,7 @@ describe("world", () => {
           RoadSide(0, 0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(0, 1), 0)).toBeTruthy();
+        expect(world.place(tile1, new Vector2(0, 1), 0, false)).toBeTruthy();
       });
 
       test("invalid", () => {
@@ -108,7 +108,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(0, 1), 0)).toBeFalsy();
+        expect(world.place(tile1, new Vector2(0, 1), 0, false)).toBeFalsy();
       });
     });
 
@@ -122,7 +122,7 @@ describe("world", () => {
           RoadSide(0, 0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile0, new Vector2(0, 0), 0)).toBeTruthy();
+        expect(world.place(tile0, new Vector2(0, 0), 0, false)).toBeTruthy();
       });
 
       test("valid", () => {
@@ -132,7 +132,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(0, -1), 0)).toBeTruthy();
+        expect(world.place(tile1, new Vector2(0, -1), 0, false)).toBeTruthy();
       });
 
       test("invalid", () => {
@@ -142,7 +142,7 @@ describe("world", () => {
           RoadSide(0, 0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(0, -1), 0)).toBeFalsy();
+        expect(world.place(tile1, new Vector2(0, -1), 0, false)).toBeFalsy();
       });
     });
     describe("rotated", () => {
@@ -155,7 +155,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile0, new Vector2(0, 0), 1)).toBeTruthy();
+        expect(world.place(tile0, new Vector2(0, 0), 1, false)).toBeTruthy();
       });
 
       test("valid", () => {
@@ -165,7 +165,7 @@ describe("world", () => {
           SuburbanSide(0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(1, 0), 3)).toBeTruthy();
+        expect(world.place(tile1, new Vector2(1, 0), 3, false)).toBeTruthy();
       });
 
       test("invalid", () => {
@@ -175,7 +175,7 @@ describe("world", () => {
           RoadSide(0, 0), // Bot
           SuburbanSide(0), // Left
         ]);
-        expect(world.place(tile1, new Vector2(1, 0), 2)).toBeFalsy();
+        expect(world.place(tile1, new Vector2(1, 0), 2, false)).toBeFalsy();
       });
     });
   });
@@ -189,7 +189,7 @@ describe("world", () => {
         SuburbanSide(0), // Bot
         SuburbanSide(0), // Left
       ]);
-      expect(world.place(tile0, new Vector2(0, 0), 1)).toBeTruthy();
+      expect(world.place(tile0, new Vector2(0, 0), 1, false)).toBeTruthy();
     });
     test("startingNodesAreCorrect", () => {
       const unconnectedRoads = world.getUnconnectedRoads();
@@ -213,7 +213,7 @@ describe("world", () => {
         RoadSide(0, 0), // Bot
         SuburbanSide(0), // Left
       ]);
-      expect(world.place(tile1, new Vector2(1, 0), 1)).toBeTruthy();
+      expect(world.place(tile1, new Vector2(1, 0), 1, false)).toBeTruthy();
 
       const unconnectedRoads = world.getUnconnectedRoads();
 
