@@ -56,7 +56,7 @@ export function mediumCommercialTile6(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.skyscraperF,
-        new Vector3(0.5, 0, 0.5),
+        new Vector3(-0.4, 0, 0.6),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],

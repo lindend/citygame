@@ -96,11 +96,11 @@ function createTileSide(
   } else {
     const size = getTileSideSize(tile, sideIndex);
 
-    let scaling = Vector3.OneReadOnly;
+    let scaling = Matrix.IdentityReadOnly;
     let inverted = false;
     // Mirror right-sided tiles
     if (size.orientation == "left") {
-      scaling = new Vector3(-1, 1, 1);
+      scaling = Matrix.Scaling(-1, 1, 1);
       inverted = true;
     }
 
@@ -111,10 +111,10 @@ function createTileSide(
       return tileAsset(
         item.mesh,
         Matrix.Compose(
-          (item.scale || defaultScale).multiply(scaling),
+          item.scale || defaultScale,
           Quaternion.FromEulerVector(item.rotation || Vector3.ZeroReadOnly),
           item.position
-        ),
+        ).multiply(scaling),
         inverted
       );
     });

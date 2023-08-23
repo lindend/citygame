@@ -17,7 +17,7 @@ export function smallCommercialTile1(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.small_buildingC,
-        new Vector3(0.5, 0, 0.5),
+        new Vector3(-0.4, 0, 0.5),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],
@@ -31,7 +31,7 @@ export function smallCommercialTile2(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.small_buildingA,
-        new Vector3(0.5, 0, 0.5),
+        new Vector3(-0.4, 0, 0.425),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],
@@ -45,7 +45,7 @@ export function smallCommercialTile3(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.small_buildingB,
-        new Vector3(0.5, 0, 0.5),
+        new Vector3(-0.4, 0, 0.5),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],
@@ -58,7 +58,7 @@ export function smallCommercialTile4(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.small_buildingD,
-        new Vector3(0.5, 0, 0.5),
+        new Vector3(-0.4, 0, 0.45),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],
@@ -71,7 +71,7 @@ export function smallCommercialTile5(game: Game): Zone {
       meshItem(
         "building1",
         game.assets.commercial.small_buildingE,
-        new Vector3(0.5, 0, 0.5),
+        new Vector3(-0.4, 0, 0.475),
         { rotation: new Vector3(0, Math.PI, 0) }
       ),
     ],

@@ -44,12 +44,14 @@ export class DayNightCycleController {
       } else {
         ramp = 1 - progress(time, dawn - nightWindowRampTime, dawn);
       }
-      this.game.materials.window.emissiveColor = windowGlowColor.multiply(
-        new Color3(ramp, ramp, ramp)
-      );
+
+      var windowEmissiveColor = new Color3(ramp, ramp, ramp);
+      this.game.materials.window.emissiveColor =
+        windowGlowColor.multiply(windowEmissiveColor);
       this.glowLayer.isEnabled = true;
     } else {
       this.game.materials.window.emissiveColor = Color3.BlackReadOnly;
+      this.game.materials.window_inverted.emissiveColor = Color3.BlackReadOnly;
       this.glowLayer.isEnabled = false;
     }
 
